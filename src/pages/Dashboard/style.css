@@ -1,0 +1,101 @@
+/* CSS BUAT BOLD */
+.bold-text {font-weight: bold;}
+
+/* CSS PAGE NYA */
+.dashboard-page {
+    display: flex;
+    flex-direction: row;
+    background-color: black;
+    background-color: rgb(186, 202, 218);
+    min-height: 100vh;
+    width: 65%;
+    margin: auto;
+}
+
+/* CSS NAVBAR */
+.dashboard-page>.navbar {
+    display: flex;
+    flex-direction: column;
+    color: gray;
+    background-color: white;
+    height: 100vh;
+    width: 8%;
+    position: sticky;
+    top: 0px;
+    box-shadow: 1px 1px 3px 1px rgb(129, 129, 129, 0.3);
+}
+
+.dashboard-page>.navbar>.navbar-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.dashboard-page>.navbar>.navbar-button:hover {
+    cursor: pointer;
+    color: green;
+}
+
+/* CSS BUAT MAIN-AREA */
+.dashboard-page>.main-area {
+    height: 100%;
+    padding: 0px 20px 0px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dashboard-page>.main-area>.header-area {
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+ 
+.dashboard-page>.main-area>.filter-area {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin: 20px 0px 20px 20px;
+}
+
+.search-result {
+    background-color: #f5f5f5;
+    display: block;
+    position: absolute;
+    z-index: 10;
+    width: 261px;
+    border-radius: 3px;
+}
+
+.dashboard-page>.main-area>.print-area {
+    width: 100%;
+}
+
+.print-area>.print-item-card-area {
+    width: 99%;
+    margin-left: auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+/* CSS BUAT CART AREA */
+.cart-area {
+    /* overflow: hidden; */
+    height: 100vh;
+    width: 25%;
+    position: sticky;
+    top: 0px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px 10px;
+    box-shadow: 1px 1px 3px 1px rgb(129, 129, 129, 0.3);
+}

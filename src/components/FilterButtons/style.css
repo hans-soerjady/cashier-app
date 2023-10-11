@@ -1,0 +1,36 @@
+.filter-button {
+    width: 90px;
+    height: 150px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 8px;
+    user-select: none;
+}
+
+.filter-button:hover {
+    background-color: #38A169;
+    color: white;
+    transition: 0.3s ease-out;
+}
+
+.filter-button>.icon {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    height: 50%;
+    border-radius: 8px;
+}
+
+.filter-button>.icon:hover {
+    background-color: white;
+    color: rgb(0, 99, 0);
+    box-shadow: 3px 3px 3px 3px rgba(110, 110, 110, 0.3);
+    transition: 0.4s ease-out;
+}
+
+.filter-button>.text{
+    margin-bottom: 20px;
+}

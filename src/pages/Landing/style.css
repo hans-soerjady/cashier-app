@@ -1,0 +1,18 @@
+.landing-page {
+    height: 100vh;
+    width: 70vw;
+    background-color: rgb(186, 202, 218);
+    margin: auto;
+    display: flex;
+}
+
+.landing-page-card {
+    height: fit-content;
+    width: 50%;
+    margin: auto;
+}
+
+.landing-page-card *{
+    margin: auto;
+    text-align: center;
+}

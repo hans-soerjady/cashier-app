@@ -1,0 +1,15 @@
+.search-result>.search-item-cards {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid rgb(208, 208, 208);
+    cursor: pointer;
+    user-select: none;
+}
+
+.search-result>.search-item-cards>img {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}

@@ -1,0 +1,35 @@
+.cart-area>.cart-items {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.cart-items>.content-wrapper {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+.cart-items>.content-wrapper button {
+    height: 22px;
+    width: 22px;
+    border-radius: 50%;
+    padding: 0px;
+    margin: 0px;
+    min-width: 20px;
+
+}
+
+.cart-items img {
+    width: 25px;
+    height: 25px;
+}
+
+.cart-items button:hover {
+    background-color: rgb(163, 0, 0);
+    color: white;
+}
