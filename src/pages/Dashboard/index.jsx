@@ -1,14 +1,14 @@
 import React from "react";
+import axios from "axios";
 
 // import css
 import { Button, Box, Text, Input, InputGroup, InputLeftAddon, Select, } from "@chakra-ui/react";
 import "./style.css"
 
 // import icons
-import { FaHouseChimney } from "react-icons/fa6";
 import { MdSearch } from "react-icons/md";
 import { TbFlame } from "react-icons/tb";
-import { BiDrink, BiSolidDashboard } from "react-icons/bi";
+import { BiDrink } from "react-icons/bi";
 import { IoFastFoodOutline } from "react-icons/io5";
 import { LuDessert, LuCroissant } from "react-icons/lu";
 
@@ -20,63 +20,38 @@ import SearchItemCards from "../../components/SearchItemCards";
 import CartItems from "../../components/CartItems";
 
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { addToCartAction, deleteCartAction } from "../../redux/action/cartAction";
+import LayoutPage from "../../components/LayoutPage";
+import { addToCart, deleteCart } from "../../redux/slice/cartSlice";
+import { getProducts } from "../../redux/slice/productSlice";
+
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { API_CALL } from "../../helper";
+
 
 const Dashboard = () => {
-    const [database, setDatabase] = React.useState([
-        {
-            id: 1,
-            name: "Pizza",
-            price: 65000,
-            img: "https://pngfre.com/wp-content/uploads/pizza-png-from-pngfre-16-300x300.png",
-            category: "Food"
-        },
-
-        {
-            id: 2,
-            name: "Burger",
-            price: 40000,
-            img: "https://static.vecteezy.com/system/resources/previews/022/598/811/original/tasty-beef-burger-png.png",
-            category: "Food"
-        },
-
-        {
-            id: 3,
-            name: "Beef Steak",
-            price: 55000,
-            img: "https://pngimg.com/d/steak_PNG11.png",
-            category: "Hot"
-        },
-
-        {
-            id: 4,
-            name: "Coffee Latte",
-            price: 22000,
-            img: "https://static.vecteezy.com/system/resources/previews/009/887/177/original/hot-coffee-latte-cup-free-png.png",
-            category: "Drink"
-        },
-
-        {
-            id: 5,
-            name: "Cheesecake",
-            price: 31000,
-            img: "https://static.vecteezy.com/system/resources/previews/025/065/317/non_2x/cheesecake-with-ai-generated-free-png.png",
-            category: "Dessert"
-        },
-
-        {
-            id: 6,
-            name: "French Fries",
-            price: 27000,
-            img: "https://www.pngkey.com/png/full/8-86527_french-fries-french-fries-png.png",
-            category: "Snack"
-        },
-
-    ])
-
-    const navigate = useNavigate("");
     const dispatch = useDispatch("");
+    const navigate = useNavigate();
+    const location = useLocation()
+
+    // const [database, setDatabase] = React.useState([])
+
+    // const getProducts = () => {
+    //     axios.get(`http://localhost:2023/product`).then((response) => {
+    //         console.log(response.data);
+    //         setDatabase(response.data)
+    //     }).catch((err) => {
+    //         console.log(err);
+    //     })
+    // };
+
+    const database = useSelector((state) => { return state.productReducer.products })
+    const account = useSelector((state) => { return state.accountReducer })
+
+    React.useEffect(() => {
+        dispatch(getProducts())
+    }, [])
+
+
 
     const [currentDate, setCurrentDate] = React.useState(new Date())
     setInterval(() => { setCurrentDate(new Date()) }, 1000)
@@ -85,37 +60,20 @@ const Dashboard = () => {
     const [filterSortDatabase, setFilterSortDatabase] = React.useState("")
     const [searchMenu, setSearchMenu] = React.useState("")
 
-
-    const [cartData, setCartData] = React.useState([])
     const [totalCartTransaction, setTotalCartTransaction] = React.useState(0)
     const [cartAreaDisplay, setCartAreaDisplay] = React.useState("none")
     const [mainAreaWidth, setMainAreaWidth] = React.useState("92%")
 
-    const account = useSelector((state) => { return state.accountReducer })
 
     const printData = () => {
 
-        if (filterSortDatabase === "none") {
-            setDatabase(database.sort((a, b) => { return a.id - b.id }))
-            setFilterSortDatabase("")
-        } else if (filterSortDatabase === "ascending") {
-            setDatabase(database.sort((a, b) => { return a.price - b.price }))
-            setFilterSortDatabase("")
-        } else if (filterSortDatabase === "descending") {
-            setDatabase(database.sort((a, b) => { return b.price - a.price }))
-            setFilterSortDatabase("")
-        } else if (filterSortDatabase === "under50") {
-            setDatabase(database.sort((a, b) => { return a.id - b.id }))
-            setFilterSortDatabase("under50v2")
-        }
-
-
         return database.map(value => {
-            if ((value.category === filterState || filterState === "") && (value.price < 50000 || filterSortDatabase !== "under50v2")) {
-                return <ItemCards img={value.img} itemName={value.name} itemPrice={value.price}
+            // if (value.category === filterState || filterState === "") {
+            if (true) {
+                return <ItemCards key={value.id} img={value.img} itemName={value.name} itemPrice={value.price}
                     func={() => {
-                        setTotalCartTransaction(totalCartTransaction + value.price)
-                        dispatch(addToCartAction({
+                        setTotalCartTransaction(totalCartTransaction + parseInt(value.price))
+                        dispatch(addToCart({
                             id: value.id,
                             name: value.name,
                             price: value.price,
@@ -132,8 +90,8 @@ const Dashboard = () => {
                 if ((value.name).toLowerCase().includes(searchMenu.toLowerCase())) {
                     return <SearchItemCards img={value.img} name={value.name} price={value.price}
                         func={() => {
-                            setTotalCartTransaction(totalCartTransaction + value.price)
-                            dispatch(addToCartAction({
+                            setTotalCartTransaction(totalCartTransaction + parseInt(value.price))
+                            dispatch(addToCart({
                                 id: value.id,
                                 name: value.name,
                                 price: value.price,
@@ -145,7 +103,10 @@ const Dashboard = () => {
         }
     }
 
-    const cartDatabasev2 = useSelector((state) => { return state.cartReducer })
+    const cartDatabasev2 = useSelector((state) => {
+        return state.cartReducer
+    })
+
     const printCart = () => {
         if (cartDatabasev2.length > 0) {
             if (cartAreaDisplay === "none") {
@@ -155,7 +116,7 @@ const Dashboard = () => {
             return cartDatabasev2.map((value, index) => {
                 return <CartItems img={value.img} name={value.name} price={value.price} qty={value.qty}
                     func={() => {
-                        dispatch(deleteCartAction(
+                        dispatch(deleteCart(
                             {
                                 id: value.id,
                                 name: value.name,
@@ -163,7 +124,7 @@ const Dashboard = () => {
                                 img: value.img,
                             }
                         ))
-                        setTotalCartTransaction(totalCartTransaction - value.price)
+                        setTotalCartTransaction(totalCartTransaction - parseInt(value.price))
                     }} />
             })
         } else {
@@ -180,7 +141,8 @@ const Dashboard = () => {
     const [snackActive, setSnackActive] = React.useState({})
     const [dessertActive, setDessertActive] = React.useState({})
 
-    const filterFunction = (param) => {
+    React.useEffect(() => {
+        dispatch(getProducts(location.search))
 
         let activeStyle = {
             main: {
@@ -188,15 +150,13 @@ const Dashboard = () => {
                 color: "white",
                 transform: "translateY(-10px)",
             },
-
+    
             icon: {
                 backgroundColor: "white",
                 color: "rgb(0, 99, 0)",
                 boxShadow: "3px 3px 3px 3px rgba(110, 110, 110, 0.3)",
-            }
-
-        }
-
+            }}
+    
         let objData = [
             { value: "Hot", func: (any) => { setHotActive(any) } },
             { value: "Food", func: (any) => { setFoodActive(any) } },
@@ -205,45 +165,31 @@ const Dashboard = () => {
             { value: "Dessert", func: (any) => { setDessertActive(any) } },
         ]
 
+        objData.forEach((val) => {
+            if (val.value === location.search.split("=")[1]) { val.func(activeStyle) }
+            else { val.func({}) }
+        })
+
+    }, [location.search])
+
+    const filterFunction = (param) => {
         if (filterState !== param) {
             setFilterState(param)
-            objData.forEach((val) => {
-                if (val.value === param) { val.func(activeStyle) }
-                else { val.func({}) }
-            })
+            navigate(`/dashboard?category=${param}`)
 
         } else {
             setFilterState("")
-            let idx = objData.findIndex((value) => { return value.value === param })
-            objData[idx].func({})
+            navigate(`/dashboard`)
         }
-
     }
 
-    // useEffect(() => {
-    //     if(!account.username) {
-    //         navigate("/")
-    //     }
-    // }, [account])
-
-    // console.log(account)
-    return <div className={"dashboard-page"}>
-        <Box className="navbar">
-            <Box className="navbar-button">
-                <FaHouseChimney className="icon" size={"24px"} />
-                <Text fontSize={"14px"} color={"gray"} >Home</Text>
-            </Box>
-
-            <Box className="navbar-button">
-                <BiSolidDashboard className="icon" size={"24px"} />
-                <Text fontSize={"14px"} color={"gray"} >Manage</Text>
-            </Box>
-        </Box>
-
+    return <LayoutPage>
         <Box className="main-area" width={mainAreaWidth}>
             <Box className="header-area">
-                <Text fontSize={"24px"}><span className="bold-text">Order</span> Menu</Text>
-                <Text>Hi, {account.username}!</Text>
+                <Box>
+                    <Text fontSize={"24px"}><span className="bold-text">Order</span> Menu</Text>
+                    <Text>Hi, {account.username}!</Text>
+                </Box>
                 <Text className="bold-text" color={"gray"} fontSize={"14px"}>{`${currentDate.toDateString("id")}, ${currentDate.toLocaleTimeString("id")}`}</Text>
                 <Box>
                     <InputGroup className="input-group">
@@ -319,7 +265,7 @@ const Dashboard = () => {
                 <Button colorScheme="green" size={"sm"} width={"100%"}>Order Now</Button>
             </Box>
         </Box>
-    </div>
+    </LayoutPage>
 }
 
 export default Dashboard;

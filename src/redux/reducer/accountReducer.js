@@ -6,15 +6,15 @@ const INITIAL_STATE = {
 
 
 // PENULISAN LAMA
-export const accountReducer = (state = INITIAL_STATE, action) => {
-    switch (action.type) {
-        case "LOGIN":
-            return { ...state, username: action.payload.username, password: action.payload.password, role: "admin" };
+// export const accountReducer = (state = INITIAL_STATE, action) => {
+//     switch (action.type) {
+//         case "LOGIN":
+//             return { ...state, username: action.payload.username, password: action.payload.password, role: action.payload.role };
 
-        case "LOGOUT":
-            return INITIAL_STATE;
+//         case "LOGOUT":
+//             return INITIAL_STATE;
             
-        default:
-            return state;
-    }
-};
+//         default:
+//             return state;
+//     }
+// };

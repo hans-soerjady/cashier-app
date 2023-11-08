@@ -11,7 +11,7 @@ const ItemCards = (props) => {
         <Box className="item-cards-content">
             <Heading fontSize={"md"}>{props.itemName}</Heading>
 
-            <Text fontSize={"sm"}>{"Rp. " + props.itemPrice.toLocaleString("id")}</Text>
+            <Text fontSize={"sm"}>{"Rp. " + parseInt(props.itemPrice).toLocaleString("id")}</Text>
         </Box>
     </Card>
 }

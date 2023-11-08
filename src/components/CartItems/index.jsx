@@ -11,7 +11,7 @@ const CartItems = (props) => {
 
             <Box className="item-desc">
                 <Text className={"bold-text"} >{props.name}</Text>
-                <Text color={"gray"}>Rp. {(props.price.toLocaleString("id"))}</Text>
+                <Text color={"gray"}>Rp. {(parseInt(props.price).toLocaleString("id"))}</Text>
             </Box>
 
             <Text >{props.qty}x</Text>

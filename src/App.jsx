@@ -1,18 +1,20 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import Landing from './pages/Landing'
 import Dashboard from "./pages/Dashboard"
 
 import './App.css'
 import { useEffect } from 'react';
-import {useDispatch} from "react-redux";
-import { loginAction } from './redux/action/accountAction';
+import { useDispatch, useSelector } from "react-redux";
+import { checkLogin } from './redux/slice/accountSlice';
+import ManageAccountPage from './pages/Manage/Account';
+import ManageProductPage from './pages/Manage/Product';
 
 function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if(localStorage.getItem("username")){
-      dispatch(loginAction({username: localStorage.getItem("username")}))
+    if (localStorage.getItem("auth")) {
+      dispatch(checkLogin(JSON.parse(localStorage.getItem("auth"))))
     }
   }, [])
 
@@ -21,6 +23,9 @@ function App() {
       <Route path="/" element={<Landing />} />
       <Route path='/landing' element={<Landing />} />
       <Route path='/dashboard' element={<Dashboard />} />
+      <Route path='/dashboard/:category' element={<Dashboard />} />
+      <Route path='/manage/account' element={<ManageAccountPage />} />
+      <Route path='/manage/product' element={<ManageProductPage />} />
     </Routes>
   </div>
   )

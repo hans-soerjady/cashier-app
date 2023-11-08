@@ -20,21 +20,40 @@ import {
 import "./style.css"
 
 import React, { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import axios from 'axios'
+import { useDispatch, useSelector } from 'react-redux'
 import { loginAction } from '../../redux/action/accountAction'
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai"
+import { login } from '../../redux/slice/accountSlice'
 
 const Landing = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
+    const username = useSelector((state) => {
+        console.log("cek reducer", state.accountReducer);
+        return state.accountReducer.username
+    })
+
     const refUsername = React.useRef("")
     const refPassword = React.useRef("")
 
     const onLogin = () => {
-        localStorage.setItem("username", refUsername.current.value)
-        dispatch(loginAction({ username: refUsername.current.value, password: refPassword.current.value }))
-        navigate("/dashboard")
+
+        axios.get(`http://localhost:3035/account/?username=${refUsername.current.value}&password=${refPassword.current.value}`).then((response) => {
+            if (response.data.length === 0) {
+                console.log("Gak nemu", response.data);
+                return alert("Account not found, please enter the username and password correctly.")
+            } else {
+                console.log("Nemu", response.data);
+                localStorage.setItem("auth", JSON.stringify(response.data[0]))
+                dispatch(login(response.data[0]))
+                navigate("/dashboard")
+            }
+        }).catch((err) => {
+            console.log("Masuk Error", err);
+        })
+
     }
 
     const [isVisible, setIsVisible] = React.useState(false);
