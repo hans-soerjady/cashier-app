@@ -1,5 +1,4 @@
 import React from "react";
-import axios from "axios";
 
 // import css
 import { Button, Box, Text, Input, InputGroup, InputLeftAddon, Select, } from "@chakra-ui/react";
@@ -7,11 +6,6 @@ import "./style.css"
 
 // import icons
 import { MdSearch } from "react-icons/md";
-import { TbFlame } from "react-icons/tb";
-import { BiDrink } from "react-icons/bi";
-import { IoFastFoodOutline } from "react-icons/io5";
-import { LuDessert, LuCroissant } from "react-icons/lu";
-
 
 // import components
 import FilterButtons from "../../components/FilterButtons";
@@ -24,34 +18,17 @@ import LayoutPage from "../../components/LayoutPage";
 import { addToCart, deleteCart } from "../../redux/slice/cartSlice";
 import { getProducts } from "../../redux/slice/productSlice";
 
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { API_CALL } from "../../helper";
-
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
     const dispatch = useDispatch("");
     const navigate = useNavigate();
-    const location = useLocation()
 
-    // const [database, setDatabase] = React.useState([])
-
-    // const getProducts = () => {
-    //     axios.get(`http://localhost:2023/product`).then((response) => {
-    //         console.log(response.data);
-    //         setDatabase(response.data)
-    //     }).catch((err) => {
-    //         console.log(err);
-    //     })
-    // };
-
+    // TEMPAT GLOBAL STATE
     const database = useSelector((state) => { return state.productReducer.products })
     const account = useSelector((state) => { return state.accountReducer })
-
-    React.useEffect(() => {
-        dispatch(getProducts())
-    }, [])
-
-
+    const categories = useSelector((state) => { return state.categoryReducer.categories })
+    const cartDatabasev2 = useSelector((state) => { return state.cartReducer })
 
     const [currentDate, setCurrentDate] = React.useState(new Date())
     setInterval(() => { setCurrentDate(new Date()) }, 1000)
@@ -66,21 +43,18 @@ const Dashboard = () => {
 
 
     const printData = () => {
-
         return database.map(value => {
-            // if (value.category === filterState || filterState === "") {
-            if (true) {
-                return <ItemCards key={value.id} img={value.img} itemName={value.name} itemPrice={value.price}
-                    func={() => {
-                        setTotalCartTransaction(totalCartTransaction + parseInt(value.price))
-                        dispatch(addToCart({
-                            id: value.id,
-                            name: value.name,
-                            price: value.price,
-                            img: value.img,
-                        }))
-                    }} />
-            }
+            return <ItemCards key={value.id} img={`http://localhost:2064/public/productImages/${value.productImages[0].img}`}
+                itemName={value.name} itemPrice={value.price}
+                func={() => {
+                    setTotalCartTransaction(totalCartTransaction + parseInt(value.price))
+                    dispatch(addToCart({
+                        id: value.id,
+                        name: value.name,
+                        price: value.price,
+                        img: `http://localhost:2064/public/productImages/${value.productImages[0].img}`,
+                    }))
+                }} />
         })
     }
 
@@ -95,7 +69,7 @@ const Dashboard = () => {
                                 id: value.id,
                                 name: value.name,
                                 price: value.price,
-                                img: value.img,
+                                img: `http://localhost:2064/public/productImages/${value.productImages[0].img}`,
                             }))
                         }} />
                 }
@@ -103,9 +77,13 @@ const Dashboard = () => {
         }
     }
 
-    const cartDatabasev2 = useSelector((state) => {
-        return state.cartReducer
-    })
+    const printCategory = () => {
+        return categories.map((value, index) => {
+            return <FilterButtons key={index} className={"active"} img={value.image} name={value.name}
+                style={filterState === value.name ? activeStyle.main : {}} iconStyle={filterState === value.name ? activeStyle.icon : {}}
+                func={() => { filterFunction(value.name) }} />
+        })
+    }
 
     const printCart = () => {
         if (cartDatabasev2.length > 0) {
@@ -135,51 +113,30 @@ const Dashboard = () => {
         }
     }
 
-    const [hotActive, setHotActive] = React.useState({})
-    const [foodActive, setFoodActive] = React.useState({})
-    const [drinkActive, setDrinkActive] = React.useState({})
-    const [snackActive, setSnackActive] = React.useState({})
-    const [dessertActive, setDessertActive] = React.useState({})
+    let activeStyle = {
+        main: {
+            backgroundColor: "#38A169",
+            color: "white",
+            transform: "translateY(-10px)",
+        },
 
-    React.useEffect(() => {
-        dispatch(getProducts(location.search))
-
-        let activeStyle = {
-            main: {
-                backgroundColor: "#38A169",
-                color: "white",
-                transform: "translateY(-10px)",
-            },
-    
-            icon: {
-                backgroundColor: "white",
-                color: "rgb(0, 99, 0)",
-                boxShadow: "3px 3px 3px 3px rgba(110, 110, 110, 0.3)",
-            }}
-    
-        let objData = [
-            { value: "Hot", func: (any) => { setHotActive(any) } },
-            { value: "Food", func: (any) => { setFoodActive(any) } },
-            { value: "Drink", func: (any) => { setDrinkActive(any) } },
-            { value: "Snack", func: (any) => { setSnackActive(any) } },
-            { value: "Dessert", func: (any) => { setDessertActive(any) } },
-        ]
-
-        objData.forEach((val) => {
-            if (val.value === location.search.split("=")[1]) { val.func(activeStyle) }
-            else { val.func({}) }
-        })
-
-    }, [location.search])
+        icon: {
+            backgroundColor: "white",
+            color: "rgb(0, 99, 0)",
+            boxShadow: "3px 3px 3px 3px rgba(110, 110, 110, 0.3)",
+        }
+    }
 
     const filterFunction = (param) => {
         if (filterState !== param) {
             setFilterState(param)
             navigate(`/dashboard?category=${param}`)
+            dispatch(getProducts(`?category=${param}`))
 
         } else {
             setFilterState("")
             navigate(`/dashboard`)
+            dispatch(getProducts())
         }
     }
 
@@ -206,11 +163,10 @@ const Dashboard = () => {
             </Box>
 
             <Box className="filter-area">
-                <FilterButtons className={"active"} icon={<TbFlame size={"40px"} />} name={"Hot"}
-                    style={hotActive.main} iconStyle={hotActive.icon}
-                    func={() => { filterFunction("Hot") }} />
+                {printCategory()}
 
-                <FilterButtons icon={<IoFastFoodOutline size={"40px"} />} name={"Food"}
+
+                {/* <FilterButtons icon={<IoFastFoodOutline size={"40px"} />} name={"Food"}
                     style={foodActive.main} iconStyle={foodActive.icon}
                     func={() => { filterFunction("Food") }} />
 
@@ -224,7 +180,7 @@ const Dashboard = () => {
 
                 <FilterButtons icon={<LuDessert size={"40px"} />} name={"Dessert"}
                     style={dessertActive.main} iconStyle={dessertActive.icon}
-                    func={() => { filterFunction("Dessert") }} />
+                    func={() => { filterFunction("Dessert") }} /> */}
             </Box>
 
             <Box className="print-area">

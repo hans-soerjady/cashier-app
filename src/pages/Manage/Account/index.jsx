@@ -26,18 +26,8 @@ const ManageAccountPage = () => {
         } catch (error) {
             console.log(error);
         }
-
-        // axios
-        //     .get(import.meta.env.VITE_API_URL + `/account`)
-        //     .then((response) => {
-        //         console.log("GET DATA ACCOUNT");
-        //         setAccountDatabase(response.data)
-        //     }).catch((err) => {
-        //         console.log("Masuk error", err)
-        //     })
     }
 
-    // pertama kali load ngambil database accounts
     React.useEffect(() => {
         getAccounts()
     }, [])
@@ -47,7 +37,7 @@ const ManageAccountPage = () => {
             return <Tr>
                 <Td>{value.id}</Td>
                 <Td>{value.username}</Td>
-                <Td>{value.password}</Td>
+                <Td>********</Td>
                 <Td>{value.role}</Td>
                 <Td>
                     <ButtonGroup>

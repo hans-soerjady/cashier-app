@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { API_CALL } from "../../helper";
-import { useNavigate } from "react-router-dom";
 
 const accountSlice = createSlice({
     name: "account",
@@ -11,10 +10,7 @@ const accountSlice = createSlice({
     },
     reducers: {
         login: (state, action) => {
-            console.log("masuk action login", action.payload);
             state.username = action.payload.username
-            state.password = action.payload.password
-            state.role = action.payload.role
         },
 
         logout: (state, action) => {
@@ -35,15 +31,11 @@ export default accountSlice.reducer;
 export const checkLogin = (data) => {
     return async (dispatch) => {
         try {
-            const res = await API_CALL.get(`/account?username=${data.username}&password=${data.password}`)
-            if (res.data.length) {
-                console.log("menemukan account di database", res.data);
-                dispatch(login(res.data[0]))
-            } else {
-                console.log("TIDAK MENEMUKAN", res.data);
-                localStorage.removeItem("auth")
-            }
+            const res = await API_CALL.post(`/account/keepLogin`, null, { headers: { authorization: `Bearer ${data}` } })
+            localStorage.setItem("token", res.data.result.token)
+            dispatch(login(res.data.result))
         } catch (error) {
+            localStorage.removeItem("token")
             console.log(error);
         }
     }

@@ -8,14 +8,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { checkLogin } from './redux/slice/accountSlice';
 import ManageAccountPage from './pages/Manage/Account';
 import ManageProductPage from './pages/Manage/Product';
+import { getProducts } from './redux/slice/productSlice';
+import { getCategories } from './redux/slice/categorySlice';
 
 function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (localStorage.getItem("auth")) {
-      dispatch(checkLogin(JSON.parse(localStorage.getItem("auth"))))
+    if (localStorage.getItem("token")) {
+      dispatch(checkLogin(localStorage.getItem("token")))
     }
+    dispatch(getProducts())
+    dispatch(getCategories())
   }, [])
 
   return (<div className='body'>

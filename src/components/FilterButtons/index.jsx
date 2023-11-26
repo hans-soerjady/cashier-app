@@ -8,7 +8,9 @@ const FilterButtons = (props) => {
         <Box className="icon"
             onClick={props.func}
             style={props.iconStyle}>
-            {props.icon}
+            <img src={`http://localhost:2064/public/categoryImg/${props.img}`}
+                style={{width: "100%", height: "100%", objectFit: "contain"}}
+            />
         </Box>
         <Text className="text" fontSize={"md"}>{props.name}</Text>
     </Card>

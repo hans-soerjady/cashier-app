@@ -2,58 +2,46 @@ import { useNavigate } from 'react-router-dom'
 
 import {
     Card,
-    CardHeader,
     CardBody,
-    CardFooter,
     Button,
     Heading,
     Text,
     Input,
     FormControl,
     FormLabel,
-    FormErrorMessage,
-    FormHelperText,
     InputGroup,
     InputRightAddon,
 } from '@chakra-ui/react'
 
 import "./style.css"
 
-import React, { useEffect } from 'react'
-import axios from 'axios'
-import { useDispatch, useSelector } from 'react-redux'
-import { loginAction } from '../../redux/action/accountAction'
+import React from 'react'
+import { useDispatch } from 'react-redux'
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai"
 import { login } from '../../redux/slice/accountSlice'
+import { API_CALL } from '../../helper'
 
 const Landing = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
-    const username = useSelector((state) => {
-        console.log("cek reducer", state.accountReducer);
-        return state.accountReducer.username
-    })
-
     const refUsername = React.useRef("")
     const refPassword = React.useRef("")
 
-    const onLogin = () => {
-
-        axios.get(`http://localhost:3035/account/?username=${refUsername.current.value}&password=${refPassword.current.value}`).then((response) => {
-            if (response.data.length === 0) {
-                console.log("Gak nemu", response.data);
-                return alert("Account not found, please enter the username and password correctly.")
-            } else {
-                console.log("Nemu", response.data);
-                localStorage.setItem("auth", JSON.stringify(response.data[0]))
-                dispatch(login(response.data[0]))
+    const onLogin = async () => {
+        try {
+            const resp = await API_CALL.post(`/account/login`, {username: refUsername.current.value, password: refPassword.current.value})
+            if(resp.data.success) {
+                console.log(resp.data);
+                localStorage.setItem("token",resp.data.result.token)
+                dispatch(login(resp.data.result))
                 navigate("/dashboard")
+            } else {
+                return alert("Cannot find the selected account")
             }
-        }).catch((err) => {
-            console.log("Masuk Error", err);
-        })
-
+        } catch (error) {
+            alert("Unsuccessful login. Please enter username and password correctly.")
+        }
     }
 
     const [isVisible, setIsVisible] = React.useState(false);
